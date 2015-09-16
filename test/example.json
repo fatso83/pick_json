@@ -1,13 +1,4 @@
 {
-   "environment": {
-      "requiredUserDataVersion": "1.0.0",
-      "requiredMinimumFrameworkVersion": "7.4.3"
-   },
-   "distributedSharingQueue": {
-      "registeredSharingTasks": 0,
-      "jobQueueErrors": 0,
-      "redisErrors": 0
-   },
    "redis": {
       "connected": true,
       "ready": true,
@@ -19,48 +10,5 @@
          "offset": 0
       }
    },
-   "processInfo": {
-      "version": "v0.12.4",
-      "versions": {
-         "http_parser": "2.3",
-         "node": "0.12.4",
-         "v8": "3.28.71.19",
-         "uv": "1.5.0",
-         "zlib": "1.2.8",
-         "modules": "14",
-         "openssl": "1.0.1m"
-      },
-      "arch": "x64",
-      "platform": "darwin",
-      "memoryUsage": {
-         "rss": 81788928,
-         "heapTotal": 60734464,
-         "heapUsed": 39754408
-      },
-      "upTime": {
-         "days": 0,
-         "hours": 0,
-         "minutes": 1,
-         "seconds": 6
-      }
-   },
-   "users": {
-      "connectedClients": 0
-   },
-   "chainStats": [
-      {
-         "chainId": 1100,
-         "numberOfLists": 0,
-         "totalNumberOfChanges": 0,
-         "listsChanged": 0,
-         "listsSharedWith": []
-      },
-      {
-         "chainId": 1300,
-         "numberOfLists": 0,
-         "totalNumberOfChanges": 0,
-         "listsChanged": 0,
-         "listsSharedWith": []
-      }
-   ]
+   "error_codes" : [2001, 4004]
 }
