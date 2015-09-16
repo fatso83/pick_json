@@ -1,0 +1,33 @@
+#!/usr/local/bin/node
+/* Evil eval based utility. Only pass me nice data ... */
+var fs=require("fs");
+var json;
+var args;
+var result;
+
+function usage() {
+    console.log('Usage: curl http://site.com/data.json |  pick_cli foo.bar.baz');
+    process.exit(1);
+}
+
+if(process.argv.length != 3) {
+    console.error('Needs one argument to pick from a json structure');
+    usage();
+}
+
+try {
+    json=JSON.parse(fs.readFileSync("/dev/stdin").toString());
+}catch(ex) {
+    console.error('Received illegal JSON: ' + ex.message);
+    process.exit(1)
+}
+
+var arg = process.argv[2];
+var result = eval("json." + arg);
+
+if(result) {
+    console.log(result);
+} else {
+    console.error('No data found using identifier ' + arg);
+}
+

@@ -1,0 +1,30 @@
+{
+  "name": "pick_json",
+  "version": "1.0.0",
+  "description": "Command line utility to extract an object from a deeply nested json structure",
+  "bin": {
+    "pick_json": "./bin/cli-interface"
+  },
+  "scripts": {
+    "test": "node bin/cli-interface redis.connected < test/example.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatso83/pick_json.git"
+  },
+  "keywords": [
+    "json",
+    "utility",
+    "cli",
+    "command",
+    "line",
+    "nested",
+    "structures"
+  ],
+  "author": "Carl-Erik Kopseng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fatso83/pick_json/issues"
+  },
+  "homepage": "https://github.com/fatso83/pick_json#readme"
+}
