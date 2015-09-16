@@ -1,6 +1,6 @@
 {
   "name": "pick_json",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Command line utility to extract an object from a deeply nested json structure",
   "bin": {
     "pick_json": "./bin/cli-interface"
