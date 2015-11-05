@@ -2,21 +2,21 @@
 > Command line utility to extract an object from a deeply nested json structure
 > Useful as parts of script chains when reading from files or from curl
 
+## Options
 ```
-./pick_json.js --help
-
   Usage: pick_json [options] <objectExpr>
 
   Options:
 
     -h, --help     output usage information
     -V, --version  output the version number
-    -a, --array    Interpret the json structure as an array. Example: `pick_json [4].id`
+    -a, --array    Interpret the json structure as an array
+```
 
-  Examples
-
-    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42
-    $ echo [ { "bar" : 42 } ] |  pick_cli -a [0].bar #returns 42
+## Installation
+Assumes you have Node installed
+```
+npm install -g pick_json
 ```
 
 ## Examples

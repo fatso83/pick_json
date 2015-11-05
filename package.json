@@ -29,7 +29,6 @@
   "homepage": "https://github.com/fatso83/pick_json#readme",
   "dependencies": {
     "colors": "^1.1.2",
-    "commander": "^2.9.0",
-    "promisify-node": "^0.2.1"
+    "commander": "^2.9.0"
   }
 }
