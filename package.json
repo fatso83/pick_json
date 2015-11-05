@@ -1,12 +1,12 @@
 {
   "name": "pick_json",
   "version": "1.0.1",
-  "description": "Command line utility to extract an object from a deeply nested json structure",
+  "description": "Command line utility to extract an object from a nested json structure",
   "bin": {
-    "pick_json": "./bin/cli-interface"
+    "pick_json": "pick_json.js"
   },
   "scripts": {
-    "test": "node bin/cli-interface redis.connected < test/example.json"
+    "test": "test/test-driver.sh"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/fatso83/pick_json/issues"
   },
-  "homepage": "https://github.com/fatso83/pick_json#readme"
+  "homepage": "https://github.com/fatso83/pick_json#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "promisify-node": "^0.2.1"
+  }
 }

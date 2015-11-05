@@ -1,9 +1,27 @@
 # pick_json
 > Command line utility to extract an object from a deeply nested json structure
+> Useful as parts of script chains when reading from files or from curl
 
-## Reading from a file
+```
+./pick_json.js --help
 
-We are using the following json data file as input data in the examples
+  Usage: pick_json [options] <objectExpr>
+
+  Options:
+
+    -h, --help     output usage information
+    -V, --version  output the version number
+    -a, --array    Interpret the json structure as an array. Example: `pick_json [4].id`
+
+  Examples
+
+    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42
+    $ echo [ { "bar" : 42 } ] |  pick_cli -a [0].bar #returns 42
+```
+
+## Examples
+
+We are using the following json data file as input data in the examples. You can find it in the `test` directory
 ```javascript
 {
    "redis": {
@@ -33,10 +51,16 @@ pick_json redis.connected < test/example.json
 ```
 returns `true`
 
+### When receiving an array
+```
+echo [ { "bar" : 42 } ] |  pick_cli --array [0].bar 
+```
+returns 42
+
 ## Extracting data from a http service
 Use curl to extract the data and pipe it into `pick_json`
 
 ```
-curl -s mysite.com/service.json | pick stats.uptime 
+curl -s mysite.com/service.json | pick_json stats.uptime 
 ```
 
