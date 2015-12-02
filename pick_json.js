@@ -11,17 +11,18 @@ var json;
 var result;
 
 program
-	.version(packageJson.version)
-	.arguments('<objectExpr>')
-	.action(function (expr) {
-		objectExpression = expr;
-	})
-	.option('-a, --array', 'Interpret the json structure as an array. Example: `pick_json [4].id`')
-	.on('--help', function () {
-		console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42');
-		console.log('    $ echo [ { "bar" : 42 } ] |  pick_cli -a [0].bar #returns 42');
-	})
-	.parse(process.argv);
+    .version(packageJson.version)
+    .arguments('<objectExpr>')
+    .action(function (expr) {
+        objectExpression = expr;
+    })
+    .option('-a, --array', 'Interpret the json structure as an array. Example: `pick_json [4].id`')
+    .option('-k, --keys', 'Just output the keys')
+    .on('--help', function () {
+        console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42');
+        console.log('    $ echo [ { "bar" : 42 } ] |  pick_cli -a [0].bar #returns 42');
+    })
+    .parse(process.argv);
 
 if (typeof objectExpression === 'undefined') {
 	console.error('no expression given!');
@@ -56,7 +57,11 @@ if(program.array) {
 }
 
 if (result) {
-	console.log(result);
+    if(program.keys){
+        console.log(Object.keys(result).join('\n'));
+    } else { 
+        console.log(result); 
+    }
 } else {
 	console.error('No data found using identifier ' + objectExpression);
     process.exit(1);
