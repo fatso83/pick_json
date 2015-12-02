@@ -1,6 +1,6 @@
 {
   "name": "pick_json",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Command line utility to extract an object from a nested json structure",
   "bin": {
     "pick_json": "pick_json.js"
