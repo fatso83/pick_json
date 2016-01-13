@@ -41,24 +41,25 @@ We are using the following json data file as input data in the examples. You can
 
 ### Picking from an array
 ```
-pick_json error_codes[1] < test/example.json
+pick_json error_codes[1] test/example.json
 ```
  returns `4004`
 
 ### Picking from a nested structure
 ```
-pick_json redis.connected < test/example.json
+pick_json redis.connected test/example.json
 ```
 returns `true`
 
 ### Filtering data
 Remember, the `expr` can be *any* valid expression operating on the data
 ```
-pick_json "error_data.filter(err => err > 3000)" < data.json
+pick_json "error_data.filter(err => err > 3000)" data.json
 ```
 returns `[4004]`
 
 ### When receiving an array
+we need to distinguish the data from a normal object 
 ```
 echo [ { "bar" : 42 } ] |  pick_cli --array [0].bar 
 ```
