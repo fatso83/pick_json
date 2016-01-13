@@ -6,21 +6,24 @@ var fs = require("fs");
 var program = require('commander');
 var packageJson = JSON.parse(fs.readFileSync(__dirname + '/package.json').toString());
 var colors = require('colors');
+var util = require('util');
+var fileToRead='/dev/stdin';
 var objectExpression;
 var json;
 var result;
 
 program
     .version(packageJson.version)
-    .arguments('<objectExpr>')
-    .action(function (expr) {
+    .arguments('<objectExpr> [file]')
+    .action(function (expr, file) {
         objectExpression = expr;
+        file && (fileToRead = file);
     })
     .option('-a, --array', 'Interpret the json structure as an array. Example: `pick_json [4].id`')
     .option('-k, --keys', 'Just output the keys')
     .on('--help', function () {
         console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42');
-        console.log('    $ echo [ { "bar" : 42 } ] |  pick_cli -a [0].bar #returns 42');
+        console.log('    $ echo [ { "bar" : 42 } ] |  pick_cli -a "[0].bar > 40" #returns true');
     })
     .parse(process.argv);
 
@@ -35,9 +38,12 @@ function make_red (txt) {
 }
 
 try {
-	json = JSON.parse(fs.readFileSync("/dev/stdin").toString());
+	json = JSON.parse(fs.readFileSync(fileToRead).toString());
 } catch (ex) {
-	console.error('Could not parse supplied JSON from stdin: ' + ex.message);
+	console.error(util.format(
+        'Could not parse supplied JSON from %s: %s', 
+        file === stdin ? 'stdin' : fileToRead,
+        ex.message));
 	process.exit(1)
 }
 
@@ -48,7 +54,7 @@ if (program.array && !Array.isArray(json)) {
 if(program.array) {
     result = eval('json'+objectExpression);
 } else {
-    let match = objectExpression.match(/([a-zA-Z0-9-]*)(.*)/);
+    let match = objectExpression.match(/([a-zA-Z0-9-_]*)(.*)/);
 
     let firstPart = match[1];
     let rest = match[2];

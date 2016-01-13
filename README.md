@@ -4,7 +4,7 @@
 
 ## Options
 ```
-  Usage: pick_json [options] <objectExpr>
+  Usage: pick_json [options] <expr> [file]
 
   Options:
 
@@ -51,11 +51,18 @@ pick_json redis.connected < test/example.json
 ```
 returns `true`
 
+### Filtering data
+Remember, the `expr` can be *any* valid expression operating on the data
+```
+pick_json "error_data.filter(err => err > 3000)" < data.json
+```
+returns `[4004]`
+
 ### When receiving an array
 ```
 echo [ { "bar" : 42 } ] |  pick_cli --array [0].bar 
 ```
-returns 42
+returns `42`
 
 ## Extracting data from a http service
 Use curl to extract the data and pipe it into `pick_json`
