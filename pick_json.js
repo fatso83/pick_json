@@ -66,7 +66,7 @@ if (result) {
     if(program.keys){
         console.log(Object.keys(result).join('\n'));
     } else { 
-        console.log(result); 
+        console.log(JSON.stringify(result, null, 4)); 
     }
 } else {
 	console.error('No data found using identifier ' + objectExpression);
