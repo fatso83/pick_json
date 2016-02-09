@@ -42,7 +42,7 @@ try {
 } catch (ex) {
 	console.error(util.format(
         'Could not parse supplied JSON from %s: %s', 
-        file === stdin ? 'stdin' : fileToRead,
+        fileToRead === '/dev/stdin' ? 'stdin' : fileToRead,
         ex.message));
 	process.exit(1)
 }
