@@ -4,13 +4,17 @@
 
 ## Options
 ```
-  Usage: pick_json [options] <expr> [file]
+  Usage: pick_json [options] <objectExpr> [file]
 
   Options:
 
     -h, --help     output usage information
     -V, --version  output the version number
-    -a, --array    Interpret the json structure as an array
+    -k, --keys     Just output the keys
+    -a, --array    <ignored/deprecated>
+
+Example
+    $ echo '[ { "bar" : 42 } ]' |  pick_json "[0].bar > 40" #returns true
 ```
 
 ## Installation

@@ -21,8 +21,15 @@ CMD="node $DIR/../pick_json.js"
     [ ${output} = "42" ]
 }
 
-@test "Can evaluate a random expression" {
+@test "Can evaluate any expression #1" {
     run bash -c "echo '[ { \"bar\" : 42 } ]' |  $CMD -a \"[0].bar > 40\""
     [ ${output} = true ]
 }
 
+
+@test "Can evaluate any expression #2" {
+    run pick_json "error_codes.filter(err => err > 3000)" $DIR/example.json
+    [[ ${lines[0]} = "[" ]]
+    [[ ${lines[1]} =~ "4004" ]]
+    [[ ${lines[2]} = "]" ]]
+}

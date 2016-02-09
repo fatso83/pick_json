@@ -22,8 +22,7 @@ program
     .option('-k, --keys', 'Just output the keys')
     .option('-a, --array', '<ignored/deprecated>')
     .on('--help', () => {
-        console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_json foo.bar #returns 42');
-        console.log('    $ echo \'[ { "bar" : 42 } ]\' |  pick_json "[0].bar > 40" #returns true');
+        console.log('Example\n    $ echo \'[ { "bar" : 42 } ]\' |  pick_json "[0].bar > 40" #returns true');
     })
     .parse(process.argv);
 
