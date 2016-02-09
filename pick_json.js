@@ -15,15 +15,15 @@ var result;
 program
     .version(packageJson.version)
     .arguments('<objectExpr> [file]')
-    .action(function (expr, file) {
+    .action((expr, file) => {
         objectExpression = expr;
         file && (fileToRead = file);
     })
-    .option('-a, --array', 'Interpret the json structure as an array. Example: `pick_json [4].id`')
     .option('-k, --keys', 'Just output the keys')
-    .on('--help', function () {
-        console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_cli foo.bar #returns 42');
-        console.log('    $ echo [ { "bar" : 42 } ] |  pick_cli -a "[0].bar > 40" #returns true');
+    .option('-a, --array', '<ignored/deprecated>')
+    .on('--help', () => {
+        console.log('    $ echo { "foo" : { "bar" : 42 } } |  pick_json foo.bar #returns 42');
+        console.log('    $ echo \'[ { "bar" : 42 } ]\' |  pick_json "[0].bar > 40" #returns true');
     })
     .parse(process.argv);
 
@@ -47,13 +47,11 @@ try {
 	process.exit(1)
 }
 
-if (program.array && !Array.isArray(json)) {
-	throw new TypeError('JSON is not an array');
-}
-
-if(program.array) {
+if (Array.isArray(json)) {
     result = eval('json'+objectExpression);
 } else {
+    // This complex matching allows for evaluation of arbitrary expressions
+    // i.e. "servers.filter( name => name == 'redis' )"
     let match = objectExpression.match(/([a-zA-Z0-9-_]*)(.*)/);
 
     let firstPart = match[1];
