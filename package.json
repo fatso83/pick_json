@@ -6,7 +6,7 @@
     "pick_json": "pick_json.js"
   },
   "scripts": {
-    "test": "test/test-driver.sh"
+    "test": "bats test"
   },
   "repository": {
     "type": "git",
