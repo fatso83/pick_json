@@ -21,15 +21,24 @@ CMD="node $DIR/../pick_json.js"
     [ ${output} = "42" ]
 }
 
-@test "Can evaluate any expression #1" {
+@test "Can evaluate an expression on an property" {
     run bash -c "echo '[ { \"bar\" : 42 } ]' |  $CMD -a \"[0].bar > 40\""
     [ ${output} = true ]
 }
 
 
-@test "Can evaluate any expression #2" {
+@test "Can transform an array property" {
     run pick_json "error_codes.filter(err => err > 3000)" $DIR/example.json
     [[ ${lines[0]} = "[" ]]
     [[ ${lines[1]} =~ "4004" ]]
     [[ ${lines[2]} = "]" ]]
+}
+
+# More of a documentation test than anything else
+@test "Can do direct transforms on arrays" {
+    run bash -c "echo '[1,2,3,4,5]' | pick_json '.filter( val => val > 3 )'"
+    [[ ${lines[0]} = "[" ]]
+    [[ ${lines[1]} =~ "4" ]]
+    [[ ${lines[2]} =~ "5" ]]
+    [[ ${lines[3]} = "]" ]]
 }
