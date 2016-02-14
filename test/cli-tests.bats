@@ -42,3 +42,11 @@ CMD="node $DIR/../pick_json.js"
     [[ ${lines[2]} =~ "5" ]]
     [[ ${lines[3]} = "]" ]]
 }
+
+@test "Can handle operations on arrays without a preceding dot" {
+    run bash -c "echo '[1,2,3,4,5]' | pick_json 'filter( val => val > 3 )'"
+    [[ ${lines[0]} = "[" ]]
+    [[ ${lines[1]} =~ "4" ]]
+    [[ ${lines[2]} =~ "5" ]]
+    [[ ${lines[3]} = "]" ]]
+}

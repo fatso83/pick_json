@@ -63,9 +63,8 @@ pick_json "error_data.filter(err => err > 3000)" data.json
 returns `[4004]`
 
 ### When receiving an array
-we need to distinguish the data from a normal object 
 ```
-echo [ { "bar" : 42 } ] |  pick_cli --array [0].bar 
+echo [ { "bar" : 42 } ] |  pick_cli [0].bar 
 ```
 returns `42`
 
