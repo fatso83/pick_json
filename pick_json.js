@@ -22,6 +22,7 @@ program
 })
 .option('-k, --keys', 'Just output the keys')
 .option('-a, --array', '<ignored/deprecated>')
+.option('-v, --verbose', 'Verbose errors')
 .on('--help', () => {
     console.log('Example\n    $ echo \'[ { "bar" : 42 } ]\' |  pick_json "[0].bar > 40" #returns true');
 })
@@ -37,8 +38,11 @@ function make_red (txt) {
     return colors.red(txt); //display the help text in red on the console
 }
 
-function outputError(txt){
+function outputError(txt, error){
     console.error(make_red(txt));
+    if(error && program.verbose) {
+        console.log(error.stack);
+    }
 }
 
 try {
@@ -48,40 +52,35 @@ try {
     outputError(util.format(
         'Could not parse supplied JSON from %s: %s', 
         fileToRead === '/dev/stdin' ? 'stdin' : fileToRead,
-        ex.message));
+        ex.message), ex);
         process.exit(1)
 }
 
+let evalString;
 try{
 
-    if (isArray) {
-        let safeExp;
-
-        if (objectExpression.match(/^\[\d+\]/)) {
-            safeExp = objectExpression;
-        } else if (!objectExpression.startsWith('.')) {
-            safeExp = '.' + objectExpression;
-        } else if (objectExpression.startsWith('.')) {
-            safeExp = objectExpression;
-        } else {
-            outputError('Expressions on arrays must start with indexes or properties of an array');
-            program.outputHelp();
-            process.exit(1);
-        }
-        result = eval('json'+safeExp);
+    if (objectExpression.match(/^\[\d+\]/)) {
+        evalString = 'json'+objectExpression;
     } else {
+
         // This complex matching allows for evaluation of arbitrary expressions
         // i.e. "servers.filter( name => name == 'redis' )"
-        let match = objectExpression.match(/([a-zA-Z0-9-_]*)(.*)/);
+        let rangeAlpha = 'a-zA-Z';
+        let rangeAlphaNum = `${rangeAlpha}0-9`
+        let regex = new RegExp(`\\.?([${rangeAlpha}_][${rangeAlphaNum}_]*)(.*)`);
+        let match = objectExpression.match(regex);
 
         let firstPart = match[1];
         let rest = match[2];
         let str = ( 'json["' + firstPart + '"]' + rest);
-        result = eval( str );
+        evalString = str;
     }
+    result = eval( evalString );
+
 } catch(err){
-    outputError(`Failed processing "${objectExpression}"`);
+    outputError(`Failed processing "${objectExpression}"`, err);
     if (isArray) { console.log('Is the expression applicable to an array?'); }
+    if(program.verbose) { console.log(`String we tried to evaluate: ${evalString}`); }
     process.exit(1);
 }
 
@@ -92,7 +91,7 @@ if (result) {
         console.log(JSON.stringify(result, null, 4)); 
     }
 } else {
-    outputError('No data found using identifier ' + objectExpression);
+    outputError('No data found using identifier ' + objectExpression, err);
     process.exit(1);
 }
 

@@ -17,12 +17,12 @@ CMD="node $DIR/../pick_json.js"
 }
 
 @test "Working with arrays of objects works" {
-    run bash -c "echo '[ { \"bar\" : 42 } ]' | $CMD -a [0].bar"
+    run bash -c "echo '[ { \"bar\" : 42 } ]' | $CMD [0].bar"
     [ ${output} = "42" ]
 }
 
 @test "Can evaluate an expression on an property" {
-    run bash -c "echo '[ { \"bar\" : 42 } ]' |  $CMD -a \"[0].bar > 40\""
+    run bash -c "echo '[ { \"bar\" : 42 } ]' |  $CMD \"[0].bar > 40\""
     [ ${output} = true ]
 }
 
