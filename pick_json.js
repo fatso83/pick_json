@@ -9,26 +9,23 @@ const colors = require('colors');
 const util = require('util');
 let fileToRead='/dev/stdin';
 let objectExpression;
+let evalString;
 let json;
 let result;
 let isArray;
 
 program
 .version(packageJson.version)
-.arguments('<objectExpr> [file]')
-.action((expr, file) => {
-    objectExpression = expr;
-    file && (fileToRead = file);
-})
-.option('-k, --keys', 'Just output the keys')
-.option('-a, --array', '<ignored/deprecated>')
+.option('-k, --keys', 'Just output the keys. Will output the root keys if no expression is given')
+.option('-e, --exp <expression>', 'Expression to filter the json. Must start with an attribute or index')
+.option('-f, --file <file>', 'Use <file> instead of standard input')
 .option('-v, --verbose', 'Verbose errors')
 .on('--help', () => {
-    console.log('Example\n    $ echo \'[ { "bar" : 42 } ]\' |  pick_json "[0].bar > 40" #returns true');
+    console.log('Example\n    $ echo \'[ { "bar" : 42 } ]\' |  pick_json -e "[0].bar > 40" #returns true');
 })
 .parse(process.argv);
 
-if (typeof objectExpression === 'undefined') {
+if (!program.keys && (typeof program.exp=== 'undefined')) {
     console.error('no expression given!');
     program.outputHelp(make_red);
     process.exit(1);
@@ -46,6 +43,7 @@ function outputError(txt, error){
 }
 
 try {
+    fileToRead = program.file || fileToRead;
     json = JSON.parse(fs.readFileSync(fileToRead).toString());
     isArray = Array.isArray(json);
 } catch (ex) {
@@ -56,10 +54,12 @@ try {
         process.exit(1)
 }
 
-let evalString;
+objectExpression = program.exp;
 try{
 
-    if (objectExpression.match(/^\[\d+\]/)) {
+    if (!objectExpression) {
+        evalString = 'json';
+    } else if (objectExpression.match(/^\[\d+\]/)) {
         evalString = 'json'+objectExpression;
     } else {
 

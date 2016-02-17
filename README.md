@@ -4,17 +4,19 @@
 
 ## Options
 ```
-  Usage: pick_json [options] <objectExpr> [file]
+  Usage: pick_json [options]
 
   Options:
 
-    -h, --help     output usage information
-    -V, --version  output the version number
-    -k, --keys     Just output the keys
-    -a, --array    <ignored/deprecated>
+    -h, --help              output usage information
+    -V, --version           output the version number
+    -k, --keys              Just output the keys. Will output the root keys if no expression is given
+    -e, --exp <expression>  Expression to filter the json. Must start with an attribute or index
+    -f, --file <file>       Use <file> instead of standard input
+    -v, --verbose           Verbose errors
 
 Example
-    $ echo '[ { "bar" : 42 } ]' |  pick_json "[0].bar > 40" #returns true
+    $ echo '[ { "bar" : 42 } ]' |  pick_json -e "[0].bar > 40" #returns true
 ```
 
 ## Installation
@@ -45,20 +47,20 @@ We are using the following json data file as input data in the examples. You can
 
 ### Picking from an array
 ```
-pick_json error_codes[1] test/example.json
+pick_json -e error_codes[1] test/example.json
 ```
  returns `4004`
 
 ### Picking from a nested structure
 ```
-pick_json redis.connected test/example.json
+pick_json -e redis.connected test/example.json
 ```
 returns `true`
 
 ### Filtering data
 Remember, the `expr` can be *any* valid expression operating on the data
 ```
-pick_json "error_data.filter(err => err > 3000)" data.json
+pick_json -e "error_data.filter(err => err > 3000)" data.json
 ```
 returns `[4004]`
 
@@ -72,6 +74,6 @@ returns `42`
 Use curl to extract the data and pipe it into `pick_json`
 
 ```
-curl -s mysite.com/service.json | pick_json stats.uptime 
+curl -s mysite.com/service.json | pick_json -e stats.uptime 
 ```
 
