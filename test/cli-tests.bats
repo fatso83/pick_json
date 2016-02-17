@@ -16,6 +16,15 @@ CMD="node $DIR/../pick_json.js"
     [ ${output} = "true" ]
 }
 
+@test "Outputting keys from a sub element works" {
+    run $CMD -k redis $DIR/example.json
+    [[ ${lines[0]} =~ "connected" ]]
+    [[ ${lines[1]} =~ "ready" ]]
+    [[ ${lines[2]} =~ "connections" ]]
+    [[ ${lines[3]} =~ "commandsSent" ]]
+    [[ ${lines[4]} =~ "commandQueue" ]]
+}
+
 @test "Working with arrays of objects works" {
     run bash -c "echo '[ { \"bar\" : 42 } ]' | $CMD [0].bar"
     [ ${output} = "42" ]
