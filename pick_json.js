@@ -1,4 +1,4 @@
-#!/usr/local/bin/node --harmony
+#!/usr/bin/env node --harmony
 /* Evil eval based utility. Only pass me nice data ... */
 'use strict';
 
