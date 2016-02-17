@@ -44,9 +44,7 @@ if(program.file) {
 readable.setEncoding('utf8');
 
 readable.on('data', (chunk) => {
-      if(program.verbose) {
-          process.stderr('got %d bytes of data', chunk.length);
-      }
+      debugOutput(`got ${chunk.length} bytes of data\n`);
       stringData += chunk;
 });
 
@@ -68,6 +66,13 @@ function outputError(txt, error){
     console.error(make_red(txt));
     if(error && program.verbose) {
         console.log(error.stack);
+    }
+}
+
+// Do not output red colored output. Simply avoid mixing the output with the stdout
+function debugOutput(txt) {
+    if(program.verbose){
+        process.stderr.write('> ' + txt);
     }
 }
 
@@ -109,7 +114,7 @@ function evaluateJSON(stringData) {
     } catch(err){
         outputError(`Failed processing "${objectExpression}"`, err);
         if (isArray) { console.log('Is the expression applicable to an array?'); }
-        if(program.verbose) { console.log(`String we tried to evaluate: ${evalString}`); }
+        debugOutput(`String we tried to evaluate: ${evalString}`);
         process.exit(1);
     }
 
