@@ -7,7 +7,8 @@ const program = require('commander');
 const packageJson = JSON.parse(fs.readFileSync(__dirname + '/package.json').toString());
 const colors = require('colors');
 const util = require('util');
-let fileToRead='/dev/stdin';
+let readable = process.stdin;
+let stringData = "";
 let objectExpression;
 let evalString;
 let json;
@@ -36,6 +37,29 @@ if(program.args.length) {
     process.exit(1);
 }
 
+if(program.file) {
+    readable = fs.createReadStream(program.file);
+}
+
+readable.setEncoding('utf8');
+
+readable.on('data', (chunk) => {
+      if(program.verbose) {
+          process.stderr('got %d bytes of data', chunk.length);
+      }
+      stringData += chunk;
+});
+
+readable.on('end', () => {
+    evaluateJSON(stringData);
+});
+
+readable.on('error', (err) => {
+    outputError('Error occurred on reading data', err);
+    process.exit(1);
+});
+
+
 function make_red (txt) {
     return colors.red(txt); //display the help text in red on the console
 }
@@ -47,56 +71,57 @@ function outputError(txt, error){
     }
 }
 
-try {
-    fileToRead = program.file || fileToRead;
-    json = JSON.parse(fs.readFileSync(fileToRead).toString());
-    isArray = Array.isArray(json);
-} catch (ex) {
-    outputError(util.format(
-        'Could not parse supplied JSON from %s: %s', 
-        fileToRead === '/dev/stdin' ? 'stdin' : fileToRead,
-        ex.message), ex);
-        process.exit(1)
-}
+function evaluateJSON(stringData) {
+    try {
+        json = JSON.parse(stringData);
+        isArray = Array.isArray(json);
+    } catch (ex) {
+        outputError(util.format(
+            'Could not parse supplied JSON from %s: %s', 
+            fileToRead === '/dev/stdin' ? 'stdin' : fileToRead,
+            ex.message), ex);
+            process.exit(1)
+    }
 
-objectExpression = program.exp;
-try{
+    objectExpression = program.exp;
+    try{
 
-    if (!objectExpression) {
-        evalString = 'json';
-    } else if (objectExpression.match(/^\[\d+\]/)) {
-        evalString = 'json'+objectExpression;
+        if (!objectExpression) {
+            evalString = 'json';
+        } else if (objectExpression.match(/^\[\d+\]/)) {
+            evalString = 'json'+objectExpression;
+        } else {
+
+            // This complex matching allows for evaluation of arbitrary expressions
+            // i.e. "servers.filter( name => name == 'redis' )"
+            let rangeAlpha = 'a-zA-Z';
+            let rangeAlphaNum = `${rangeAlpha}0-9`
+            let regex = new RegExp(`\\.?([${rangeAlpha}_][${rangeAlphaNum}_]*)(.*)`);
+            let match = objectExpression.match(regex);
+
+            let firstPart = match[1];
+            let rest = match[2];
+            let str = ( 'json["' + firstPart + '"]' + rest);
+            evalString = str;
+        }
+        result = eval( evalString );
+
+    } catch(err){
+        outputError(`Failed processing "${objectExpression}"`, err);
+        if (isArray) { console.log('Is the expression applicable to an array?'); }
+        if(program.verbose) { console.log(`String we tried to evaluate: ${evalString}`); }
+        process.exit(1);
+    }
+
+    if (result) {
+        if(program.keys){
+            console.log(Object.keys(result).join('\n'));
+        } else { 
+            console.log(JSON.stringify(result, null, 4)); 
+        }
     } else {
-
-        // This complex matching allows for evaluation of arbitrary expressions
-        // i.e. "servers.filter( name => name == 'redis' )"
-        let rangeAlpha = 'a-zA-Z';
-        let rangeAlphaNum = `${rangeAlpha}0-9`
-        let regex = new RegExp(`\\.?([${rangeAlpha}_][${rangeAlphaNum}_]*)(.*)`);
-        let match = objectExpression.match(regex);
-
-        let firstPart = match[1];
-        let rest = match[2];
-        let str = ( 'json["' + firstPart + '"]' + rest);
-        evalString = str;
+        outputError('No data found using identifier ' + objectExpression, err);
+        process.exit(1);
     }
-    result = eval( evalString );
-
-} catch(err){
-    outputError(`Failed processing "${objectExpression}"`, err);
-    if (isArray) { console.log('Is the expression applicable to an array?'); }
-    if(program.verbose) { console.log(`String we tried to evaluate: ${evalString}`); }
-    process.exit(1);
-}
-
-if (result) {
-    if(program.keys){
-        console.log(Object.keys(result).join('\n'));
-    } else { 
-        console.log(JSON.stringify(result, null, 4)); 
-    }
-} else {
-    outputError('No data found using identifier ' + objectExpression, err);
-    process.exit(1);
 }
 
