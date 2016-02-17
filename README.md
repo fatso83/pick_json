@@ -1,6 +1,7 @@
 # pick_json
-> Command line utility to extract an object from a deeply nested json structure
-> Useful as parts of script chains when reading from files or from curl
+> Cross-platform command line utility to extract and/or evaluate json. 
+> No weird new language or syntax; just use basic javascript notation in your one-liners. 
+> Pipe data into it as part of script chain or read from a file. Honey Badger doesn't care.
 
 ## Options
 ```
