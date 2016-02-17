@@ -31,6 +31,11 @@ if (!program.keys && (typeof program.exp=== 'undefined')) {
     process.exit(1);
 }
 
+if(program.args.length) {
+    outputError(`You supplied arguments that were not prefixed by an option flag: "${program.args}". Aborting.`);
+    process.exit(1);
+}
+
 function make_red (txt) {
     return colors.red(txt); //display the help text in red on the console
 }
