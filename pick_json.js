@@ -83,7 +83,7 @@ function evaluateJSON(stringData) {
     } catch (ex) {
         outputError(util.format(
             'Could not parse supplied JSON from %s: %s', 
-            fileToRead === '/dev/stdin' ? 'stdin' : fileToRead,
+            readable === process.stdin ? 'stdin' : readable.path,
             ex.message), ex);
             process.exit(1)
     }
