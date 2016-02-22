@@ -125,7 +125,7 @@ function evaluateJSON(stringData) {
             console.log(JSON.stringify(result, null, 4)); 
         }
     } else {
-        outputError('No data found using identifier ' + objectExpression, err);
+        outputError('No data found using identifier ' + objectExpression);
         process.exit(1);
     }
 }
