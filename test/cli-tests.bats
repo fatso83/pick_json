@@ -43,7 +43,7 @@ CMD="node $DIR/../pick_json.js"
 
 
 @test "Can transform an array property" {
-    run pick_json -e "error_codes.filter(err => err > 3000)" -f $DIR/example.json
+    run $CMD -e "error_codes.filter(err => err > 3000)" -f $DIR/example.json
     [[ ${lines[0]} = "[" ]]
     [[ ${lines[1]} =~ "4004" ]]
     [[ ${lines[2]} = "]" ]]
@@ -51,7 +51,7 @@ CMD="node $DIR/../pick_json.js"
 
 # More of a documentation test than anything else
 @test "Can do direct transforms on arrays" {
-    run bash -c "echo '[1,2,3,4,5]' | pick_json -e '.filter( val => val > 3 )'"
+    run bash -c "echo '[1,2,3,4,5]' | $CMD -e '.filter( val => val > 3 )'"
     [[ ${lines[0]} = "[" ]]
     [[ ${lines[1]} =~ "4" ]]
     [[ ${lines[2]} =~ "5" ]]
@@ -59,7 +59,7 @@ CMD="node $DIR/../pick_json.js"
 }
 
 @test "Can handle operations on arrays without a preceding dot" {
-    run bash -c "echo '[1,2,3,4,5]' | pick_json -e 'filter( val => val > 3 )'"
+    run bash -c "echo '[1,2,3,4,5]' | $CMD -e 'filter( val => val > 3 )'"
     [[ ${lines[0]} = "[" ]]
     [[ ${lines[1]} =~ "4" ]]
     [[ ${lines[2]} =~ "5" ]]
