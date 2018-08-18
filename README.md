@@ -3,6 +3,8 @@
 > No weird new language or syntax; just use basic javascript notation in your one-liners. 
 > Pipe data into it as part of script chain or read from a file. Honey Badger doesn't care.
 
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/fatso83)
+
 ## Options
 ```
   Usage: pick_json [options]
